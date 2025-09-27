@@ -1,0 +1,777 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Compliance Advisor Connection</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        /* Colors */
+        --primary-green: rgb(22, 106, 234);
+        --primary-dark-green: rgb(20, 87, 189);
+        --primary-dark: #2d3538;
+        --primary-blue: #24a1de;
+        --primary-red: #cc3412;
+        --telegram-blue: #0088cc;
+        --whatsapp-green: #25d366;
+        --gmail-red: #ea4335;
+        --primary-bg: #f2f7fa;
+        /* Text & Surfaces */
+        --text-primary: #2d3538;
+        --text-muted: #64748b;
+        --text-light: #94a3b8;
+        --surface-bg: #f8fafc;
+        --surface-bg-hover: #f1f5f9;
+        --border-light: #e2e8f0;
+        /* Shadows */
+        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        /* Transitions */
+        --transition-base: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        --transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", sans-serif;
+        background: linear-gradient(135deg, var(--primary-bg) 0%, #e8f4f8 100%);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        position: relative;
+      }
+      /* Background Pattern */
+
+      body::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(
+            circle at 20% 80%,
+            rgba(150, 191, 72, 0.05) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 80% 20%,
+            rgba(70, 148, 37, 0.05) 0%,
+            transparent 50%
+          );
+        pointer-events: none;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 450px;
+        background: white;
+        border-radius: 1rem;
+        box-shadow: var(--shadow-lg);
+        padding: 2rem;
+        text-align: center;
+        transition: var(--transition-slow);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .container::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(
+          90deg,
+          var(--primary-dark-green),
+          var(--primary-green)
+        );
+      }
+
+      .logo-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 2rem;
+      }
+
+      .logo-sm {
+        height: 2rem;
+        width: auto;
+      }
+
+      .title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--primary-dark);
+        margin-bottom: 0.75rem;
+      }
+
+      .subtitle {
+        color: var(--text-muted);
+        margin-bottom: 2rem;
+        font-size: 1rem;
+        line-height: 1.5;
+      }
+      /* Progress */
+
+      .progress-container {
+        margin-bottom: 2.5rem;
+      }
+
+      .progress-bg {
+        height: 0.875rem;
+        background: #e2e8f0;
+        border-radius: 9999px;
+        overflow: hidden;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+      }
+
+      .progress-bar {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(
+          90deg,
+          var(--primary-dark-green),
+          var(--primary-green)
+        );
+        border-radius: 9999px;
+        transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 0 10px rgba(150, 191, 72, 0.5);
+      }
+
+      .progress-text {
+        font-size: 0.875rem;
+        color: var(--text-muted);
+        margin-top: 0.75rem;
+        font-weight: 500;
+      }
+      /* Pulse Dots */
+
+      .pulse-dots {
+        display: flex;
+        justify-content: center;
+        gap: 1.25rem;
+        margin-bottom: 2.5rem;
+      }
+
+      .pulse-dot {
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 50%;
+        position: relative;
+        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+
+      .pulse-dot::before {
+        content: "";
+        position: absolute;
+        inset: 50% auto auto 50%;
+        transform: translate(-50%, -50%);
+        width: 60%;
+        height: 60%;
+        border-radius: 50%;
+        background: white;
+      }
+
+      .pulse-dot:nth-child(1) {
+        background: linear-gradient(
+          135deg,
+          var(--primary-dark-green),
+          var(--primary-green)
+        );
+      }
+
+      .pulse-dot:nth-child(2) {
+        background: linear-gradient(135deg, var(--primary-green), #5dadd5);
+        animation-delay: 0.3s;
+      }
+
+      .pulse-dot:nth-child(3) {
+        background: linear-gradient(135deg, var(--primary-green), #5dadd5);
+        animation-delay: 0.6s;
+      }
+      /* Status Steps */
+
+      .status-steps {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        padding: 0 1rem;
+      }
+
+      .status-step {
+        display: flex;
+        align-items: center;
+        font-size: 0.925rem;
+        color: var(--text-primary);
+        padding: 0.75rem;
+        background: var(--surface-bg);
+        border-radius: 0.5rem;
+        transition: var(--transition-base);
+      }
+
+      .status-step:hover {
+        background: var(--surface-bg-hover);
+        transform: translateX(4px);
+      }
+
+      .status-step i {
+        margin-right: 0.75rem;
+        font-size: 1rem;
+      }
+
+      .status-message {
+        font-size: 0.875rem;
+        color: var(--text-light);
+        font-style: italic;
+        margin-top: 1.5rem;
+        animation: fadeInOut 2s ease-in-out;
+      }
+      /* Advisor */
+
+      .advisor-container {
+        transform: scale(0.95);
+        opacity: 0;
+        transition: var(--transition-slow);
+      }
+
+      .advisor-container.show {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      .advisor-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--border-light);
+      }
+
+      .connected-badge {
+        background: linear-gradient(
+          135deg,
+          rgba(150, 191, 72, 0.15),
+          rgba(70, 148, 37, 0.15)
+        );
+        color: var(--primary-dark-green);
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0.375rem 0.75rem;
+        border-radius: 9999px;
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+        animation: pulse-badge 2s infinite;
+      }
+
+      .advisor-info {
+        background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+        border-radius: 0.75rem;
+        padding: 1.75rem;
+        margin-bottom: 2rem;
+        border: 1px solid var(--border-light);
+      }
+
+      .advisor-profile {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--border-light);
+      }
+
+      .advisor-avatar {
+        width: 4.5rem;
+        height: 4.5rem;
+        border-radius: 50%;
+        background: linear-gradient(
+          135deg,
+          var(--primary-dark-green),
+          var(--primary-green)
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-right: 1rem;
+        box-shadow: var(--shadow-md);
+        position: relative;
+      }
+
+      .advisor-avatar::after {
+        content: "";
+        position: absolute;
+        bottom: 2px;
+        right: 2px;
+        width: 1rem;
+        height: 1rem;
+        background: #10b981;
+        border: 2px solid white;
+        border-radius: 50%;
+      }
+
+      .advisor-details {
+        text-align: left;
+        flex: 1;
+      }
+
+      .advisor-details h3 {
+        font-weight: 700;
+        font-size: 1.25rem;
+        margin-bottom: 0.375rem;
+        color: var(--primary-dark);
+      }
+
+      .advisor-details p {
+        color: var(--text-muted);
+        font-size: 0.925rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .advisor-badges {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+
+      .badge {
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0.25rem 0.625rem;
+        border-radius: 0.375rem;
+      }
+
+      .badge-blue {
+        background: rgba(36, 161, 222, 0.1);
+        color: var(--primary-blue);
+      }
+
+      .badge-green {
+        background: rgba(150, 191, 72, 0.1);
+        color: var(--primary-dark-green);
+      }
+      /* Stats Grid */
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        font-size: 0.875rem;
+      }
+
+      .stat-card {
+        background: white;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        box-shadow: var(--shadow-sm);
+        transition: var(--transition-base);
+      }
+
+      .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+      }
+
+      .stat-label {
+        color: var(--text-muted);
+        margin-bottom: 0.375rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .stat-value {
+        font-weight: 600;
+        color: var(--primary-dark);
+        font-size: 0.925rem;
+      }
+
+      .stat-value.green {
+        color: #10b981;
+      }
+      /* Contact Buttons */
+
+      .contact-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 0.875rem;
+        margin-bottom: 2rem;
+      }
+
+      .contact-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.9375rem 1.25rem;
+        border-radius: 0.625rem;
+        color: white;
+        text-decoration: none;
+        font-size: 1rem;
+        font-weight: 500;
+        border: none;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        box-shadow: var(--shadow-md);
+        transition: var(--transition-base);
+      }
+
+      .contact-btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        transition: left 0.3s ease;
+      }
+
+      .contact-btn:hover::before {
+        left: 100%;
+      }
+
+      .contact-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+      }
+
+      .contact-btn:active {
+        transform: translateY(0);
+      }
+
+      .contact-btn i {
+        margin-right: 0.625rem;
+        font-size: 1.25rem;
+      }
+
+      .btn-whatsapp {
+        background: linear-gradient(135deg, var(--whatsapp-green), #128c7e);
+      }
+
+      .btn-telegram {
+        background: linear-gradient(135deg, var(--telegram-blue), #0077b5);
+      }
+
+      .btn-gmail {
+        background: linear-gradient(135deg, var(--gmail-red), #c5221f);
+      }
+      /* Security Info */
+
+      .security-info {
+        text-align: center;
+        color: var(--text-light);
+        font-size: 0.8125rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border-light);
+      }
+
+      .security-icons {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 0.75rem;
+      }
+
+      .security-icons i {
+        color: #cbd5e1;
+        font-size: 1rem;
+        transition: var(--transition-base);
+      }
+
+      .security-icons i:hover {
+        color: var(--primary-green);
+        transform: scale(1.2);
+      }
+      /* Animations */
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 0.6;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.05);
+        }
+      }
+
+      @keyframes pulse-badge {
+        0%,
+        100% {
+          box-shadow: 0 0 0 0 rgba(150, 191, 72, 0.4);
+        }
+        50% {
+          box-shadow: 0 0 0 8px rgba(150, 191, 72, 0);
+        }
+      }
+
+      @keyframes fadeInOut {
+        0%,
+        100% {
+          opacity: 0.5;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+      /* Responsive */
+
+      @media (max-width: 480px) {
+        .container {
+          padding: 1.5rem;
+          max-width: 100%;
+          margin: 0 0.5rem;
+        }
+        .title {
+          font-size: 1.5rem;
+        }
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+        .advisor-profile {
+          flex-direction: column;
+          text-align: center;
+        }
+        .advisor-avatar {
+          margin: 0 0 1rem 0;
+        }
+        .advisor-details {
+          text-align: center;
+        }
+        .advisor-badges {
+          justify-content: center;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Loading Container -->
+    <div id="loading-container" class="container">
+      <div class="logo-container">
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/7/73/339-3398177_wix-logo-image-picture-wix-logo-hd-png.png"
+          alt="Wix Logo"
+          class="logo-sm"
+        />
+      </div>
+      <h1 class="title">Compliance Case Review</h1>
+      <p class="subtitle">
+        Connecting you with a dedicated Wix advisor<span
+          class="loading-dots"
+        ></span>
+      </p>
+
+      <div class="progress-container">
+        <div
+          class="progress-bg"
+          role="progressbar"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-valuenow="0"
+        >
+          <div id="progress-bar" class="progress-bar"></div>
+        </div>
+        <div id="progress-text" class="progress-text">Initializing...</div>
+      </div>
+
+      <div class="pulse-dots">
+        <div class="pulse-dot"></div>
+        <div class="pulse-dot"></div>
+        <div class="pulse-dot"></div>
+      </div>
+
+      <div class="status-steps">
+        <div class="status-step">
+          <i class="fas fa-shield-alt icon-dark-green"></i
+          ><span>Verifying compliance details</span>
+        </div>
+        <div class="status-step">
+          <i class="fas fa-search icon-green"></i
+          ><span>Reviewing case history</span>
+        </div>
+        <div class="status-step">
+          <i class="fas fa-user-tie icon-dark"></i
+          ><span>Locating available advisor</span>
+        </div>
+      </div>
+
+      <div id="status-message" class="status-message" aria-live="polite">
+        Initializing secure connection...
+      </div>
+    </div>
+
+    <!-- Advisor Container -->
+    <div id="advisor-container" class="container advisor-container hidden">
+      <div class="advisor-header">
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/7/73/339-3398177_wix-logo-image-picture-wix-logo-hd-png.png"
+          alt="Wix Logo"
+          class="logo-sm"
+        />
+        <div class="connected-badge">
+          <i class="fas fa-check-circle"></i><span>Connected</span>
+        </div>
+      </div>
+      <h1 class="title">Your Support Advisor</h1>
+      <p class="subtitle">Ready to assist with your case</p>
+
+      <div class="advisor-info">
+        <div class="advisor-profile">
+          <div class="advisor-avatar" aria-label="Advisor Avatar">SA</div>
+          <div class="advisor-details">
+            <h3>Support Advisor</h3>
+            <p>Wix Support Specialist</p>
+            <div class="advisor-badges">
+              <span class="badge badge-blue">WIx Legends | Senior Advisor</span>
+              <span class="badge badge-green">4+ years</span>
+            </div>
+          </div>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Ticket No.</div>
+            <div class="stat-value">#SSL-00739</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Partner ID</div>
+            <div class="stat-value">4468364</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Cases Resolved</div>
+            <div class="stat-value">1,085</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Status</div>
+            <div class="stat-value green">
+              <i
+                class="fas fa-circle"
+                style="font-size: 0.5rem; margin-right: 0.375rem"
+              ></i
+              >Online
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-buttons">
+        <a
+          href="https://wa.me/17539010254"
+          target="_blank"
+          class="contact-btn btn-whatsapp"
+          ><i class="fab fa-whatsapp"></i> Contact via WhatsApp</a
+        >
+        <!-- <a
+          href="https://t.me/Samuel_jerome"
+          target="_blank"
+          class="contact-btn btn-telegram"
+          ><i class="fab fa-telegram"></i> Contact via Telegram</a
+        > -->
+        <button id="gmail-button" class="contact-btn btn-gmail">
+          <i class="fas fa-envelope"></i> Contact via Gmail
+        </button>
+      </div>
+
+      <div class="security-info">
+        <p>All conversations are encrypted and secure</p>
+        <div class="security-icons">
+          <i class="fas fa-lock"></i><i class="fas fa-shield-alt"></i
+          ><i class="fas fa-fingerprint"></i>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const progressBar = document.getElementById("progress-bar");
+      const progressText = document.getElementById("progress-text");
+      const statusMessage = document.getElementById("status-message");
+      const loadingContainer = document.getElementById("loading-container");
+      const advisorContainer = document.getElementById("advisor-container");
+      const gmailButton = document.getElementById("gmail-button");
+
+      const messages = [
+        "Initializing secure connection...",
+        "Verifying compliance details...",
+        "Reviewing case history...",
+        "Locating available advisor...",
+        "Finalizing secure connection...",
+      ];
+
+      function updateStatus(message) {
+        statusMessage.textContent = message;
+      }
+
+      function openEmail(email, subject, body) {
+        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        const mailto = `mailto:${email}?subject=${encodeURIComponent(
+          subject
+        )}&body=${encodeURIComponent(body)}`;
+        const gmail = `https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${encodeURIComponent(
+          subject
+        )}&body=${encodeURIComponent(body)}`;
+        try {
+          isMobile
+            ? (window.location.href = mailto)
+            : window.open(gmail, "_blank");
+        } catch (e) {
+          console.error("Email client error:", e);
+        }
+      }
+
+      gmailButton.addEventListener("click", () => {
+        openEmail(
+          "nicolewilliamsfromwix@gmail.com",
+          "Compliance Case Review",
+          "Hello Nicole, I need assistance with my compliance case."
+        );
+      });
+
+      // Progress Simulation
+      let progress = 0;
+      let messageIndex = 0;
+
+      const interval = setInterval(() => {
+        progress += Math.floor(Math.random() * 10) + 5;
+        if (progress >= 100) {
+          progress = 100;
+          clearInterval(interval);
+          progressText.textContent = "Connection Established!";
+          setTimeout(() => {
+            loadingContainer.style.display = "none";
+            advisorContainer.classList.remove("hidden");
+            advisorContainer.classList.add("show");
+          }, 1000);
+        } else {
+          progressBar.style.width = `${progress}%`;
+          progressBar.parentElement.setAttribute("aria-valuenow", progress);
+          if (messageIndex < messages.length) {
+            updateStatus(messages[messageIndex]);
+            messageIndex++;
+          }
+        }
+      }, 1200);
+    </script>
+  </body>
+</html>
